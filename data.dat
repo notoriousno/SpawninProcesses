@@ -1,0 +1,20 @@
+from twisted.internet.protocol import ProcessProtocol
+
+
+class CmdProto(ProcessProtocol):
+
+    def outReceived(self, data):
+        print('[X] {0}'.format(data))
+
+    def errReceived(self, data):
+        print('X--- {0}'.format(data))
+        self.transport.write('y')
+        self.transport.closeStdin()
+
+
+processProtocol = CmdProto()
+
+from twisted.internet import reactor
+# reactor.spawnProcess(processProtocol, 'python', ['python', '-m', 'pip', '-h'])
+reactor.spawnProcess(processProtocol, 'rm', ['rm', '-i', 'data.dat'])
+reactor.run()
